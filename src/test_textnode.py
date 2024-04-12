@@ -2,6 +2,7 @@ import unittest
 
 from textnode import TextNode
 from textnode import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
+from textnode import split_nodes_image, split_nodes_links
 
 class TestTextNode(unittest.TestCase):
     def test_create_url_optional(self):
@@ -70,6 +71,36 @@ class TestImageLinks(unittest.TestCase):
         text = "This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)"
         ans = [("link", "https://www.example.com"), ("another", "https://www.example.com/another")]
         self.assertListEqual(extract_markdown_links(text), ans)
+
+
+class TestSplitImageLinks(unittest.TestCase):
+    def test_split_images(self):
+        node = TextNode("This is text with an ![image](https://example.com/image1.png) and ![another](https://example.com/image2.jpg)", "text")
+        ans = [TextNode("This is text with an ", "text"), TextNode("image", "image", "https://example.com/image1.png"),
+            TextNode(" and ", "text"), TextNode("another", "image", "https://example.com/image2.jpg")]
+        self.assertListEqual(split_nodes_image([node]), ans)
+
+    def test_split_2images(self):
+        node = TextNode("This is text with an ![image](https://example.com/image1.png) and ![another](https://example.com/image2.jpg)", "text")
+        node2 = TextNode("Another node ![another image](https://example.com/anotherimage.jpg)", "text")
+        ans = [TextNode("This is text with an ", "text"), TextNode("image", "image", "https://example.com/image1.png"),
+            TextNode(" and ", "text"), TextNode("another", "image", "https://example.com/image2.jpg"),
+            TextNode("Another node ", "text"), TextNode("another image", "image", "https://example.com/anotherimage.jpg")]
+        self.assertListEqual(split_nodes_image([node, node2]), ans)
+
+    def test_split_links(self):
+        node = TextNode("This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)", "text")
+        ans = [TextNode("This is text with a ", "text"), TextNode("link", "link", "https://www.example.com"),
+            TextNode(" and ", "text"), TextNode("another", "link", "https://www.example.com/another")]
+        self.assertListEqual(split_nodes_links([node]), ans)
+
+    def test_split_links_2nodes(self):
+        node = TextNode("This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)", "text")
+        node2 = TextNode("Another node [another link](https://www.example.com/anotherlink)", "text")
+        ans = [TextNode("This is text with a ", "text"), TextNode("link", "link", "https://www.example.com"),
+            TextNode(" and ", "text"), TextNode("another", "link", "https://www.example.com/another"),
+            TextNode("Another node ", "text"), TextNode("another link", "link", "https://www.example.com/anotherlink")]
+        self.assertListEqual(split_nodes_links([node, node2]), ans)
 
 if __name__ == "__main__":
     unittest.main()
