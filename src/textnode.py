@@ -44,3 +44,9 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
 
     new_parts.extend(split_nodes_delimiter(old_nodes[1:], delimiter, text_type))
     return new_parts
+
+def extract_markdown_images(text):
+    return []
+
+def extract_markdown_links(text):
+    return []

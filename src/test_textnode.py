@@ -1,6 +1,7 @@
 import unittest
 
-from textnode import TextNode, split_nodes_delimiter
+from textnode import TextNode
+from textnode import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 
 class TestTextNode(unittest.TestCase):
     def test_create_url_optional(self):
@@ -58,6 +59,17 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         node = TextNode("**Double** the **boldness**", "text")
         res = [TextNode("Double", "bold"), TextNode(" the ", "text"), TextNode("boldness", "bold")]
         self.assertListEqual(split_nodes_delimiter([node], "**", "bold"), res)
+
+class TestImageLinks(unittest.TestCase):
+    def test_md_images(self):
+        text = "This is text with an ![image](https://example.com/image1.png) and ![another](https://example.com/image2.jpg)"
+        ans = [("image", "https://example.com/image1.png"), ("another", "https://example.com/image2.jpg")]
+        self.assertListEqual(extract_markdown_images(text), ans)
+
+    def test_md_links(self):
+        text = "This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)"
+        ans = [("link", "https://www.example.com"), ("another", "https://www.example.com/another")]
+        self.assertListEqual(extract_markdown_links(text), ans)
 
 if __name__ == "__main__":
     unittest.main()
