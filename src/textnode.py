@@ -122,3 +122,10 @@ def split_nodes_links(old_nodes):
 
     new_nodes.extend(split_nodes_links(old_nodes[1:]))
     return new_nodes
+
+def text_to_textnodes(text):
+    nodes = [TextNode(text, "text")]
+    delimiters = (("**", "bold"), ("*", "italic"), ("`", "code"))
+    for delimiter, type in delimiters:
+        nodes = split_nodes_delimiter(nodes, delimiter, type)
+    return split_nodes_links(split_nodes_images(nodes))
