@@ -2,7 +2,6 @@ import unittest
 
 from textnode import TextNode
 
-
 class TestTextNode(unittest.TestCase):
     def test_create_url_optional(self):
         node = TextNode("This is a text node", "bold")
