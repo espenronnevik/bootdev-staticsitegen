@@ -66,10 +66,15 @@ def split_nodes_image(old_nodes):
     except:
         raise TypeError(f"{old_nodes[0]}is not a TextNode")
 
+
     for image in extract_markdown_images(text):
+        new_parts = []
         md = f"![{image[0]}]({image[1]})"
         parts = text.partition(md)
-        new_nodes.extend([TextNode(parts[0], "text"), TextNode(image[0], "image", image[1])])
+        if parts[0] != "":
+           new_parts.append(TextNode(parts[0], "text"))
+        new_parts.append(TextNode(image[0], "image", image[1]))
+        new_nodes.extend(new_parts)
         text = parts[2]
 
     new_nodes.extend(split_nodes_image(old_nodes[1:]))
@@ -87,9 +92,13 @@ def split_nodes_links(old_nodes):
         raise TypeError(f"{old_nodes[0]}is not a TextNode")
 
     for link in extract_markdown_links(text):
+        new_parts = []
         md = f"[{link[0]}]({link[1]})"
         parts = text.partition(md)
-        new_nodes.extend([TextNode(parts[0], "text"), TextNode(link[0], "link", link[1])])
+        if parts[0] != "":
+           new_parts.append(TextNode(parts[0], "text"))
+        new_parts.append(TextNode(link[0], "link", link[1]))
+        new_nodes.extend(new_parts)
         text = parts[2]
 
     new_nodes.extend(split_nodes_links(old_nodes[1:]))
