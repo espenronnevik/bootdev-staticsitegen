@@ -1,6 +1,7 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode, ParentNode
+from htmlnode import HTMLNode, LeafNode, ParentNode, text_node_to_html_node
+from textnode import TextNode
 
 class TestHTMLNode(unittest.TestCase):
     def test_create(self):
@@ -80,6 +81,51 @@ class TestParentNode(unittest.TestCase):
         item3 = ParentNode("li", text3)
         node = ParentNode("ul", [item1, item2, item3])
         self.assertEqual(node.to_html(), "<ul><li><b>First</b> list item</li><li>List item <i>2</i></li><li>List item 3</li></ul>")
+
+class TestTextNodeToHTMLNode(unittest.TestCase):
+    def test_normal_text(self):
+        htmlnode = text_node_to_html_node(TextNode("Normal text", "text"))
+        self.assertEqual(htmlnode.value, "Normal text")
+        self.assertIsNone(htmlnode.tag)
+        self.assertIsNone(htmlnode.props)
+
+    def test_bold_text(self):
+        htmlnode = text_node_to_html_node(TextNode("Bold text", "bold"))
+        self.assertEqual(htmlnode.value, "Bold text")
+        self.assertEqual(htmlnode.tag, "b")
+        self.assertIsNone(htmlnode.props)
+
+    def test_italic_text(self):
+        htmlnode = text_node_to_html_node(TextNode("Italic text", "italic"))
+        self.assertEqual(htmlnode.value, "Italic text")
+        self.assertEqual(htmlnode.tag, "i")
+        self.assertIsNone(htmlnode.props)
+
+    def test_code_text(self):
+        htmlnode = text_node_to_html_node(TextNode("Code text", "code"))
+        self.assertEqual(htmlnode.value, "Code text")
+        self.assertEqual(htmlnode.tag, "code")
+        self.assertIsNone(htmlnode.props)
+
+    def test_link_text(self):
+        htmlnode = text_node_to_html_node(TextNode("Link text", "link", "/test.jpg"))
+        self.assertEqual(htmlnode.value, "Link text")
+        self.assertEqual(htmlnode.tag, "a")
+        self.assertDictEqual(htmlnode.props, {"href": "/test.jpg"})
+
+    def test_image_text(self):
+        htmlnode = text_node_to_html_node(TextNode("Image alt text", "image", "/image.jpg"))
+        self.assertEqual(htmlnode.value, "")
+        self.assertEqual(htmlnode.tag, "img")
+        self.assertDictEqual(htmlnode.props, {"src": "/image.jpg", "alt": "Image alt text"})
+
+    def test_bad_param(self):
+        with self.assertRaises(Exception):
+            node = text_node_to_html_node("not a TextNode")
+
+    def test_unsupported_text_type(self):
+        with self.assertRaises(Exception):
+            node = text_node_to_html_node(TextNode("Header text", "header"))
 
 if __name__ == "__main__":
     unittest.main()
