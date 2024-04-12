@@ -1,3 +1,6 @@
+from blocks import markdown_to_blocks, block_to_block_type
+from blocks import block_type_paragraph, block_type_heading, block_type_code, block_type_quote, block_type_unordered_list, block_type_ordered_list
+
 class HTMLNode(object):
     def __init__(self, tag=None, value=None, children=None, props=None) -> None:
         self.tag = tag
@@ -47,3 +50,22 @@ def ordered_list_to_htmlnode(block):
     for line in block.split("\n"):
         listitems.append(HTMLNode("li", line.split(". ", 1)[1]))
     return HTMLNode("ol", None, listitems)
+
+def markdown_to_htmlnode(markdown):
+    nodes = []
+    for block in markdown_to_blocks(markdown):
+        type = block_to_block_type(block)
+        if type == block_type_heading:
+            node = heading_to_htmlnode(block)
+        elif type == block_type_quote:
+            node = quote_to_htmlnode(block)
+        elif type == block_type_code:
+            node = code_to_htmlnode(block)
+        elif type == block_type_unordered_list:
+            node = unordered_list_to_htmlnode(block)
+        elif type == block_type_ordered_list:
+            node = ordered_list_to_htmlnode(block)
+        else:
+            node = paragraph_to_htmlnode(block)
+        nodes.append(node)
+    return HTMLNode("div", None, nodes)
