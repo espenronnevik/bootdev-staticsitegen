@@ -22,11 +22,15 @@ class HTMLNode(object):
 
 class LeafNode(HTMLNode):
     def __init__(self, value, tag=None, props=None) -> None:
-        if value is None or value == "":
-            raise ValueError("LeafNode requires a value")
         super().__init__(tag, value, None, props)
+        self.check_values()
+
+    def check_values(self):
+        if self.value is None or self.value == "":
+            raise ValueError("LeafNode requires a value")
 
     def to_html(self):
+        self.check_values()
         if self.tag is None:
             return self.value
         elif self.props is None:
