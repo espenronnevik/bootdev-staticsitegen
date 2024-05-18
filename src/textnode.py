@@ -1,19 +1,21 @@
 import re
 
+
 class TextNode(object):
 
-    def __init__(self, text, text_type, url = None) -> None:
+    def __init__(self, text, text_type, url=None) -> None:
         self.text = text
         self.text_type = text_type
         self.url = url
 
     def __eq__(self, value: object, /) -> bool:
         return (self.text == value.text and
-            self.text_type == value.text_type and
-            self.url == value.url)
+                self.text_type == value.text_type and
+                self.url == value.url)
 
     def __repr__(self) -> str:
         return f"TextNode({self.text}, {self.text_type}, {self.url})"
+
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
@@ -47,13 +49,16 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes.extend(split_nodes_delimiter(old_nodes[1:], delimiter, text_type))
     return new_nodes
 
+
 def extract_markdown_images(text):
     re_image = r"!\[(.*?)\]\((.*?)\)"
     return re.findall(re_image, text)
 
+
 def extract_markdown_links(text):
     re_links = r"\[(.*?)\]\((.*?)\)"
     return re.findall(re_links, text)
+
 
 def split_nodes_images(old_nodes):
     new_nodes = []
@@ -89,6 +94,7 @@ def split_nodes_images(old_nodes):
     new_nodes.extend(split_nodes_images(old_nodes[1:]))
     return new_nodes
 
+
 def split_nodes_links(old_nodes):
     new_nodes = []
 
@@ -122,6 +128,7 @@ def split_nodes_links(old_nodes):
 
     new_nodes.extend(split_nodes_links(old_nodes[1:]))
     return new_nodes
+
 
 def text_to_textnodes(text):
     nodes = [TextNode(text, "text")]

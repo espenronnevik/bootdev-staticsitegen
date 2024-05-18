@@ -1,5 +1,6 @@
 from htmlnode import HTMLNode
 
+
 class LeafNode(HTMLNode):
     def __init__(self, value, tag=None, props=None) -> None:
         super().__init__(tag, value, None, props)
@@ -17,6 +18,7 @@ class LeafNode(HTMLNode):
             return f"<{self.tag}>{self.value}</{self.tag}>"
         else:
             return f"<{self.tag} {self.props_to_html()}>{self.value}</{self.tag}>"
+
 
 def text_node_to_html_node(text_node):
     try:

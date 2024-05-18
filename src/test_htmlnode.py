@@ -1,9 +1,10 @@
 import unittest
 
 from htmlnode import HTMLNode
-from parentnode import ParentNode
 from leafnode import LeafNode, text_node_to_html_node
+from parentnode import ParentNode
 from textnode import TextNode
+
 
 class TestHTMLNode(unittest.TestCase):
     def test_create(self):
@@ -26,11 +27,11 @@ class TestHTMLNode(unittest.TestCase):
         node = HTMLNode()
         self.assertEqual(node.props_to_html(), "")
 
+
 class TestLeafNode(unittest.TestCase):
     def test_create_none(self):
         with self.assertRaises(ValueError):
             LeafNode(None)
-
 
     def test_no_tag(self):
         node = LeafNode("Just a value with no tag")
@@ -47,6 +48,7 @@ class TestLeafNode(unittest.TestCase):
     def test_tag_props(self):
         node = LeafNode(tag="a", value="Click me!", props={"href": "https://www.google.com"})
         self.assertEqual(node.to_html(), '<a href="https://www.google.com">Click me!</a>')
+
 
 class TestParentNode(unittest.TestCase):
     def test_create_none_tag(self):
@@ -83,7 +85,9 @@ class TestParentNode(unittest.TestCase):
         item2 = ParentNode("li", text2)
         item3 = ParentNode("li", text3)
         node = ParentNode("ul", [item1, item2, item3])
-        self.assertEqual(node.to_html(), "<ul><li><b>First</b> list item</li><li>List item <i>2</i></li><li>List item 3</li></ul>")
+        self.assertEqual(node.to_html(),
+                         "<ul><li><b>First</b> list item</li><li>List item <i>2</i></li><li>List item 3</li></ul>")
+
 
 class TestTextNodeToHTMLNode(unittest.TestCase):
     def test_normal_text(self):
@@ -129,6 +133,7 @@ class TestTextNodeToHTMLNode(unittest.TestCase):
     def test_unsupported_text_type(self):
         with self.assertRaises(Exception):
             node = text_node_to_html_node(TextNode("Header text", "header"))
+
 
 if __name__ == "__main__":
     unittest.main()

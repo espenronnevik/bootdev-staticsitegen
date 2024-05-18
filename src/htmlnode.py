@@ -1,5 +1,7 @@
+from blocks import block_type_heading, block_type_code, block_type_quote, \
+    block_type_unordered_list, block_type_ordered_list
 from blocks import markdown_to_blocks, block_to_block_type
-from blocks import block_type_paragraph, block_type_heading, block_type_code, block_type_quote, block_type_unordered_list, block_type_ordered_list
+
 
 class HTMLNode(object):
     def __init__(self, tag=None, value=None, children=None, props=None) -> None:
@@ -23,12 +25,15 @@ class HTMLNode(object):
                 res.append(f'{k}="{v}"')
             return " ".join(res)
 
+
 def paragraph_to_htmlnode(block):
     return HTMLNode("p", block)
+
 
 def heading_to_htmlnode(block):
     parts = block.split()
     return HTMLNode(f"h{len(parts[0])}", " ".join(parts[1:]))
+
 
 def quote_to_htmlnode(block):
     parts = []
@@ -36,8 +41,10 @@ def quote_to_htmlnode(block):
         parts.append(line[1:].lstrip())
     return HTMLNode("quoteblock", "\n".join(parts))
 
+
 def code_to_htmlnode(block):
     return HTMLNode("pre", None, [HTMLNode("code", block[3:][:-3])])
+
 
 def unordered_list_to_htmlnode(block):
     listitems = []
@@ -45,11 +52,13 @@ def unordered_list_to_htmlnode(block):
         listitems.append(HTMLNode("li", line[1:].lstrip()))
     return HTMLNode("ul", None, listitems)
 
+
 def ordered_list_to_htmlnode(block):
     listitems = []
     for line in block.split("\n"):
         listitems.append(HTMLNode("li", line.split(". ", 1)[1]))
     return HTMLNode("ol", None, listitems)
+
 
 def markdown_to_htmlnode(markdown):
     nodes = []

@@ -1,11 +1,12 @@
 from re import match, findall
 
-block_type_paragraph      = "paragraph"
-block_type_heading        = "heading"
-block_type_code           = "code"
-block_type_quote          = "quote"
+block_type_paragraph = "paragraph"
+block_type_heading = "heading"
+block_type_code = "code"
+block_type_quote = "quote"
 block_type_unordered_list = "unordered_list"
-block_type_ordered_list   = "ordered_list"
+block_type_ordered_list = "ordered_list"
+
 
 def markdown_to_blocks(markdown):
     blocks = []
@@ -14,13 +15,15 @@ def markdown_to_blocks(markdown):
             blocks.append(line.strip())
     return blocks
 
+
 def validate_order(lines, num=1):
     if len(lines) == 0:
         return True
 
     snum = lines[0].split(".")[0]
-    res =  int(snum) == num
+    res = int(snum) == num
     return res and validate_order(lines[1:], num + 1)
+
 
 def block_to_block_type(text):
     re_heading = r"^#{1,6} "

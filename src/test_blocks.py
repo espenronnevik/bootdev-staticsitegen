@@ -1,7 +1,9 @@
 import unittest
 
+from blocks import block_type_paragraph, block_type_heading, block_type_code, block_type_quote, \
+    block_type_unordered_list, block_type_ordered_list
 from blocks import markdown_to_blocks, block_to_block_type
-from blocks import block_type_paragraph, block_type_heading, block_type_code, block_type_quote, block_type_unordered_list, block_type_ordered_list
+
 
 class TestBlockFuncs(unittest.TestCase):
     def test_markdown_to_blocks_example(self):
@@ -49,7 +51,7 @@ class TestBlockFuncs(unittest.TestCase):
         self.assertEqual(block_to_block_type(invalid_multi), block_type_paragraph)
 
     def test_block_to_block_type_unordered_list(self):
-        valid_single_var1 ="* This is one version"
+        valid_single_var1 = "* This is one version"
         valid_single_var2 = "- This is another version"
         valid_mixed = "* Mixing and matching\n- variants is possible"
         valid_multi_long = "* A big \n* unordered\n* List\n* With many lines"

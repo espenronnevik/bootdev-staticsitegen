@@ -2,7 +2,8 @@ import unittest
 
 from textnode import TextNode, text_to_textnodes
 from textnode import extract_markdown_images, extract_markdown_links
-from textnode import split_nodes_delimiter,split_nodes_images, split_nodes_links
+from textnode import split_nodes_delimiter, split_nodes_images, split_nodes_links
+
 
 class TestTextNode(unittest.TestCase):
     def test_create_url_optional(self):
@@ -43,6 +44,7 @@ class TestTextNode(unittest.TestCase):
         ]
         self.assertListEqual(text_to_textnodes(text), ans)
 
+
 class TestSplitNodesDelimiter(unittest.TestCase):
     def test_textsplit_codeblock(self):
         node = TextNode("This is text with a `code block` word", "text")
@@ -77,6 +79,7 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         res = [TextNode("Double", "bold"), TextNode(" the ", "text"), TextNode("boldness", "bold")]
         self.assertListEqual(split_nodes_delimiter([node], "**", "bold"), res)
 
+
 class TestImageLinks(unittest.TestCase):
     def test_md_images(self):
         text = "This is text with an ![image](https://example.com/image1.png) and ![another](https://example.com/image2.jpg)"
@@ -88,34 +91,46 @@ class TestImageLinks(unittest.TestCase):
         ans = [("link", "https://www.example.com"), ("another", "https://www.example.com/another")]
         self.assertListEqual(extract_markdown_links(text), ans)
 
+
 class TestSplitImageLinks(unittest.TestCase):
     def test_split_images(self):
-        node = TextNode("This is text with an ![image](https://example.com/image1.png) and ![another](https://example.com/image2.jpg)", "text")
+        node = TextNode(
+            "This is text with an ![image](https://example.com/image1.png) and ![another](https://example.com/image2.jpg)",
+            "text")
         ans = [TextNode("This is text with an ", "text"), TextNode("image", "image", "https://example.com/image1.png"),
-            TextNode(" and ", "text"), TextNode("another", "image", "https://example.com/image2.jpg")]
+               TextNode(" and ", "text"), TextNode("another", "image", "https://example.com/image2.jpg")]
         self.assertListEqual(split_nodes_images([node]), ans)
 
     def test_split_2images(self):
-        node = TextNode("This is text with an ![image](https://example.com/image1.png) and ![another](https://example.com/image2.jpg)", "text")
+        node = TextNode(
+            "This is text with an ![image](https://example.com/image1.png) and ![another](https://example.com/image2.jpg)",
+            "text")
         node2 = TextNode("Another node ![another image](https://example.com/anotherimage.jpg)", "text")
         ans = [TextNode("This is text with an ", "text"), TextNode("image", "image", "https://example.com/image1.png"),
-            TextNode(" and ", "text"), TextNode("another", "image", "https://example.com/image2.jpg"),
-            TextNode("Another node ", "text"), TextNode("another image", "image", "https://example.com/anotherimage.jpg")]
+               TextNode(" and ", "text"), TextNode("another", "image", "https://example.com/image2.jpg"),
+               TextNode("Another node ", "text"),
+               TextNode("another image", "image", "https://example.com/anotherimage.jpg")]
         self.assertListEqual(split_nodes_images([node, node2]), ans)
 
     def test_split_links(self):
-        node = TextNode("This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)", "text")
+        node = TextNode(
+            "This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)",
+            "text")
         ans = [TextNode("This is text with a ", "text"), TextNode("link", "link", "https://www.example.com"),
-            TextNode(" and ", "text"), TextNode("another", "link", "https://www.example.com/another")]
+               TextNode(" and ", "text"), TextNode("another", "link", "https://www.example.com/another")]
         self.assertListEqual(split_nodes_links([node]), ans)
 
     def test_split_links_2nodes(self):
-        node = TextNode("This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)", "text")
+        node = TextNode(
+            "This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)",
+            "text")
         node2 = TextNode("Another node [another link](https://www.example.com/anotherlink)", "text")
         ans = [TextNode("This is text with a ", "text"), TextNode("link", "link", "https://www.example.com"),
-            TextNode(" and ", "text"), TextNode("another", "link", "https://www.example.com/another"),
-            TextNode("Another node ", "text"), TextNode("another link", "link", "https://www.example.com/anotherlink")]
+               TextNode(" and ", "text"), TextNode("another", "link", "https://www.example.com/another"),
+               TextNode("Another node ", "text"),
+               TextNode("another link", "link", "https://www.example.com/anotherlink")]
         self.assertListEqual(split_nodes_links([node, node2]), ans)
+
 
 if __name__ == "__main__":
     unittest.main()
